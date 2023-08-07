@@ -1,0 +1,54 @@
+from dronekit import connect, VehicleMode, LocationGlobalRelative,APIException
+import time
+import socket
+import math
+import argparse
+
+def  connectMyCopter(): 
+     parser=argparse.ArgumentParser(description='commands')
+     parser.add_argument('--connect')
+     args=parser.parse_args()
+     
+     connection_string=args.connect
+     baud_rate=57600
+     
+     vehicle=connect(connection_string,baud=baud_rate,wait_ready=True)
+     return vehicle 
+     
+def  arm():
+     print("WILL ARMI IN 20SECONDS")
+     vehicle.armed=True   
+     return None
+     
+def  disarm():
+     vehicle.armed=False
+     
+def  takeoff():
+     vehicle.armed=True
+     vehicle.mode = VehicleMode("GUIDED")
+     vehicle.simple_takeoff(10)
+     
+s = socket.socket();
+port = 2348	
+s.bind(('172.26.24.107', port))
+s.listen(5)
+c, addr = s.accept()	
+print("CONNECTED")
+datarecv=c.recv(1024).decode()
+print(datarecv);
+vehicle=connectMyCopter()
+cond1='arm'
+cond2='disarm'
+cond3='takeoff'
+cond4='land'
+cond5='exit'
+
+if datarecv==cond1:
+     arm()
+elif datarecv==cond2:
+     disarm()
+elif datarecv==cond3:
+     takeoff()
+     
+while datarecv==cond5:
+     c.close()

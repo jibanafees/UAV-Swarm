@@ -1,0 +1,159 @@
+from pathlib import Path
+import socket
+from tkinter import *
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
+import tkinter.messagebox
+
+
+
+ASSETS_PATH = Path(r"C:\Users\91630\Desktop\SEM 5\MPI\frame0\frame0\frame0\frame0")
+
+
+def relative_to_assets(path: str) -> Path:
+    return ASSETS_PATH / Path(path)
+port=2348
+s = socket.socket()
+#port = 12345
+s.connect(('172.26.24.107', port))
+def onClick():
+    text1=clicked.get()
+    text2=click.get()
+    if (text1=='UAV 1' and text2=='ARM')or(text1=='UAV 2' and text2=='ARM')or(text1=='UAV 3' and text2=='ARM')or(text1=='UAV 4' and text2=='ARM')or(text1=='UAV 5' and text2=='ARM')or(text1=='UAV 6' and text2=='ARM')or(text1=='ALL UAVS' and text2=='ARM'):
+        tkinter.messagebox.showinfo("ARM","WILL ARM IN 20sec")
+        my_string_var.set("The operation of selected UAV is: ARM")
+        s.send('arm'.encode())
+
+    elif (text1=='UAV 1' and text2=='DISARM')or(text1=='UAV 2' and text2=='DISARM')or(text1=='UAV 3' and text2=='DISARM')or(text1=='UAV 4' and text2=='DISARM')or(text1=='UAV 5' and text2=='DISARM')or(text1=='UAV 6' and text2=='DISARM')or(text1=='ALL UAVS' and text2=='DISARM'):
+        tkinter.messagebox.showinfo("DISARM","WILL DISARM SOON")
+        my_string_var.set("The operation of selected UAV is: DISARM")
+        s.send('disarm'.encode())
+
+    elif (text1=='UAV 1' and text2=='TAKEOFF')or(text1=='UAV 2' and text2=='TAKEOFF')or(text1=='UAV 3' and text2=='TAKEOFF')or(text1=='UAV 4' and text2=='TAKEOFF')or(text1=='UAV 5' and text2=='TAKEOFF')or(text1=='UAV 6' and text2=='TAKEOFF')or(text1=='ALL UAVS' and text2=='TAKEOFF'):
+        tkinter.messagebox.showinfo("TAKEOFF","READY TO TAKEOFF")
+        my_string_var.set("The operation of selected UAV is: TAKEOFF")
+        s.send('takeoff'.encode())
+
+    elif (text1=='UAV 1' and text2=='LAND')or(text1=='UAV 2' and text2=='LAND')or(text1=='UAV 3' and text2=='LAND')or(text1=='UAV 4' and text2=='LAND')or(text1=='UAV 5' and text2=='LAND')or(text1=='UAV 6' and text2=='LAND')or(text1=='ALL UAVS' and text2=='LAND'):
+        tkinter.messagebox.showinfo("LAND","ALL SET TO LAND")
+        my_string_var.set("The operation of selected UAV is: LAND")
+        s.send('land'.encode())
+    s.close()
+
+def close():
+    s = socket.socket()
+    s.connect(('172.26.24.107', port))
+    s.send('exit'.encode())
+    s.close()
+    window.quit();
+window = Tk()
+
+window.geometry("1219x623")
+window.configure(bg = "#FFFFFF")
+
+
+canvas = Canvas(
+    window,
+    bg = "#FFFFFF",
+    height = 623,
+    width = 1219,
+    bd = 0,
+    highlightthickness = 0,
+    relief = "ridge"
+)
+
+canvas.place(x = 0, y = 0)
+image_image_1 = PhotoImage(
+    file=relative_to_assets("image_1.png"))
+image_1 = canvas.create_image(
+    609.0,
+    343.0,
+    image=image_image_1
+)
+
+image_image_2 = PhotoImage(
+    file=relative_to_assets("image_2.png"))
+image_2 = canvas.create_image(
+    175.0,
+    248.0,
+    image=image_image_2
+)
+
+image_image_3 = PhotoImage(
+    file=relative_to_assets("image_3.png"))
+image_3 = canvas.create_image(
+    208.0,
+    399.0,
+    image=image_image_3
+)
+#DROPBOXES
+clicked = StringVar()
+clicked.set("SELECT")
+drop1 = OptionMenu(window, clicked, "UAV 1","UAV 2","UAV 3","UAV 4","UAV 5","UAV 6","ALL UAVS")
+drop1.place(
+    x=100,
+    y=300,
+    width=200,
+    height=40
+)
+
+click = StringVar()
+click.set("SELECT")
+drop2 = OptionMenu(window, click, "ARM","DISARM","TAKEOFF","LAND")
+drop2.place(
+    x=100,
+    y=450,
+    width=200,
+    height=40
+)
+#TEXT BOX FOR RESPONSE
+
+my_string_var = StringVar()
+my_string_var.set("UAV Response")
+my_label = Label(window,textvariable=my_string_var).place(x=920.0,y=300.0,width=250.0,height=40.0)
+
+
+image_image_5 = PhotoImage(
+    file=relative_to_assets("image_5.png"))
+image_5 = canvas.create_image(
+    1038.0,
+    247.0,
+    image=image_image_5
+)
+
+image_image_6 = PhotoImage(
+    file=relative_to_assets("image_6.png"))
+image_6 = canvas.create_image(
+    609.0,
+    107.0,
+    image=image_image_6
+)
+
+button_image_1 = PhotoImage(
+    file=relative_to_assets("button_1.png"))
+button_1 = Button(
+    image=button_image_1,
+    borderwidth=0,
+    highlightthickness=0,
+    command=onClick,
+    relief="flat"
+)
+button_1.place(
+    x=496.0,
+    y=531.0,
+    width=230.0,
+    height=48.0
+)
+button_2 = Button(text="exit",
+    borderwidth=0,
+    highlightthickness=0,
+    command=close,
+    relief="flat"
+)
+button_2.place(
+    x=1000.0,
+    y=531.0,
+    width=110.0,
+    height=30.0
+)
+window.resizable(False, False)
+window.mainloop()
